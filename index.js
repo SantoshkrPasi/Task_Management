@@ -1,5 +1,5 @@
 const taskContainer=document.querySelector('.task_container');
-
+const globalStorage=[];
 const newcard=(taskData)=>
     `<div class="col-md-6 col-lg-4" id="${taskData.id}">
     <div class="card">
@@ -21,6 +21,20 @@ const newcard=(taskData)=>
     </div>
   </div>`;
 
+  const loadInitialTaskCards = () =>
+  {
+    // Aceess Local Storage
+    const getInitialData = localStorage.getItem("Tasky");
+    if(!getInitialData) return;
+
+    // convert stringified object to object
+    const{cards} = JSON.parse(getInitialData);
+    cards.map((cardObject)=>{
+     const createnewcard = newcard(cardObject);
+     taskContainer.insertAdjacentHTML('beforeend', createnewcard);
+     globalStorage.push(cardObject);
+    });
+  };
 
 const saveChanges=()=>{
     const taskData={
@@ -34,6 +48,7 @@ const saveChanges=()=>{
 
     const createnewcard = newcard(taskData);
     taskContainer.insertAdjacentHTML('beforeend', createnewcard);
-    
+    globalStorage.push(taskData);
+    localStorage.setItem("Tasky",JSON.stringify({cards:globalStorage}));    
     
 }
